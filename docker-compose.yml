@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+    samba:
+        image: dperson/samba
+        container_name: samba
+        env_file: 
+            - .env
+        networks:
+            - default
+        ports:
+            - "137:137/udp"
+            - "138:138/udp"
+            - "139:139/tcp"
+            - "445:445/tcp"
+        tmpfs:
+            - /tmp
+        restart: unless-stopped
+        stdin_open: true
+        tty: true
+        volumes:
+            - $VOLUME_FOLDER:/mnt/$FOLDER
+        command: > 
+            -s "$FOLDER;/mnt/$FOLDER;yes;no;no;$USERD;$USERD;$USERD" 
+            -u "$USERD;$PASSWD" -w "$DOMAIN_NAME"
+            
+
+networks:
+    default:
